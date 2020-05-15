@@ -59,11 +59,11 @@ The open source Black Magic Probe has the ``bmtrace`` SWO viewer:
 
 Companion utilities are the ``bmdebug``  debugger and the ``bmflash`` flashing tool. These tools are open source, like the Black Magic Probe itself. Download the [tools](https://github.com/compuphase/Black-Magic-Probe-Book/releases) and the [manual](https://github.com/compuphase/Black-Magic-Probe-Book/raw/master/BlackMagicProbe.pdf).
 
-Black Magic Probe can also output a decoded SWO stream. In the device manager, Black Magic Probe shows up as two COM ports. On Windows , connect [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) to the second of the two COM ports, labeled "Black Magic UART Port". On linux, type ``cat /dev/ttyBmpTarg``. At the gdb prompt, type
+Instead of using an external viewer to do the decoding, Black Magic Probe can also output a decoded SWO stream. In the device manager, Black Magic Probe shows up as two COM ports. On Windows , connect [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) to the second of the two COM ports, labeled "Black Magic UART Port". On linux, type ``cat /dev/ttyBmpTarg``. In another window, at the gdb prompt, type
 ```
-monitor traceswo 2250000 decode
+(gdb) monitor traceswo 2250000 decode
 ```
-to decode a 2250000 baud SWO stream. The decoded SWO stream is sent to the serial port and displayed by PyTTY.
+to decode a 2250000 baud SWO stream. The decoded SWO stream is sent to the serial port and displayed by PuTTY.
 
 ## SWOStream
 The SWOStream Arduino class allows you to write debugging messages to the PC where the debugger is running. Setup parameters are:
