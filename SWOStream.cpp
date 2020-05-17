@@ -115,12 +115,10 @@ size_t SWOStream::write(const uint8_t *buffer, size_t size) {
 }
 
 void SWOStream::flush() {
-  /* nothing to flush because not buffering writes */
-#if 0
-  /* typical size of usb buffer is 64 bytes. write 64 null bytes to flush. */
-  char buf[64] = {};
-  SWOStream::write((uint8_t*)buf, sizeof(buf));
-#endif
+  /* write 64 null bytes to flush debugger buffers */
+  uint8_t buf[4] = {};
+  for (int i = 0; i < 16; i++)
+    SWOStream::write(buf, sizeof(buf));
 };
 
 /* not truncated */
