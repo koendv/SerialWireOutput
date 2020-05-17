@@ -66,7 +66,7 @@ Instead of using an external viewer to do the decoding, Black Magic Probe can al
 to decode a 2250000 baud SWO stream. The decoded SWO stream is sent to the serial port and displayed by PuTTY.
 
 ## SWOStream
-The SWOStream Arduino class allows you to write debugging messages to the PC where the debugger is running. Setup parameters are:
+The SWOStream Arduino class allows you to write tracing and logging to the PC where the debugger is running. Setup parameters are:
 
 **baudRate** Set baud rate.
 
