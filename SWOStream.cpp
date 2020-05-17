@@ -115,10 +115,9 @@ size_t SWOStream::write(const uint8_t *buffer, size_t size) {
 }
 
 void SWOStream::flush() {
-  /* write 64 null bytes to flush debugger buffers */
-  uint8_t buf[4] = {};
-  for (int i = 0; i < 16; i++)
-    SWOStream::write(buf, sizeof(buf));
+  /* write 128 null bytes to flush debugger buffers */
+  for (int i = 0; i < 128; i++)
+    SWOStream::write('\0');
 };
 
 /* not truncated */
