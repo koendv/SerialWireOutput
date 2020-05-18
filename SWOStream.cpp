@@ -70,6 +70,8 @@ SWOStream::SWOStream(uint32_t swoSpeedBaud, swoProtocolType swoProtocol, uint32_
 SWOStream::~SWOStream() {
 }
 
+static uint32_t swo_bytes_written = 0;
+
 void SWOStream::setChannel(uint32_t swoChannel) {
   if ((swoChannel < 0) || (swoChannel > 31)) swoChannel = 0;
   channel = swoChannel;
@@ -81,6 +83,7 @@ size_t SWOStream::write(uint8_t ch) {
   if (((ITM->TCR & ITM_TCR_ITMENA_Msk) != 0UL) && ((ITM->TER & 1UL<<channel) != 0UL)) { /* enabled */
     while (ITM->PORT[channel].u32 == 0UL);
     ITM->PORT[channel].u8 = ch;
+    swo_bytes_written++;
   }
   return 1;
 }
@@ -110,13 +113,14 @@ size_t SWOStream::write(const uint8_t *buffer, size_t size) {
       buffer++;
       --n;
     }
+    swo_bytes_written+=size;
   }
   return (size);
 }
 
 void SWOStream::flush() {
-  /* write 128 null bytes to flush debugger buffers */
-  for (int i = 0; i < 128; i++)
+  /* write null bytes to flush debugger buffers. typical size of usb buffer is 64 bytes. */
+  while(swo_bytes_written & 0x7f)
     SWOStream::write('\0');
 };
 
