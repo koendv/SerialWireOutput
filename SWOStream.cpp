@@ -119,9 +119,16 @@ size_t SWOStream::write(const uint8_t *buffer, size_t size) {
 }
 
 void SWOStream::flush() {
-  /* write null bytes to flush debugger buffers. typical size of usb buffer is 64 bytes. */
-  while(swo_bytes_written & 0x7f)
+  /*
+   * write null bytes to flush input buffers. typical buffer size is 64 bytes.
+   * bmp feature: a write to channel 31 flushes output.
+	 */
+
+  uint32_t curr_channel = channel;
+  channel = 31;
+  while(swo_bytes_written & 0x3f)
     SWOStream::write('\0');
+  channel = curr_channel;
 };
 
 /* not truncated */
