@@ -80,9 +80,33 @@ There is no default value. Check what baud rates your debugger supports.
 
 **swoChannel** a number between 0 and 31, used to distinguish different SWO streams. The default is 0, a safe choice.
 
+**swoEnable** set this to *false* to instantiate with SWO  disabled. Default value is *true*.
+
 **cpuClockFrequency** Set this if your board has a non-standard crystal.
 
+## SWO without debugger
+Some processors hang at power-up if you print to SWO and there is no debugger attached. As a workaround, boot with SWO disabled, and enable SWO from the debugger. To disable SWO at boot, instantiate like this:
+```
+#include <SWOStream.h>
+SWOStream s(2250000, SWO_Async, 0, false);
+void setup() {
+}
+void loop() {
+  s.print("hello world! ");
+}
+```
+To enable SWO from gdb, type:
+```
+(gdb) set mem inaccessible-by-default off
+(gdb) set {int}0xE0000E00=-1
+```
+To disable SWO from gdb, type:
+```
+(gdb) set {int}0xE0000E00=0
+```
+There's no need to put a breakpoint and stop the processor to enable/disable SWO. Just attach.
+
 # Acks
-Thanks to [orbuculum](https://github.com/orbcode/orbuculum), and the [Black Magic Probe book](https://github.com/compuphase/Black-Magic-Probe-Book).
+Thanks to [orbuculum](https://github.com/orbcode/orbuculum), [Black Magic Probe book](https://github.com/compuphase/Black-Magic-Probe-Book), and Stephen P. WIlliams.
 
 If you find errors, omissions, or have additional data, feel free to open an issue.
