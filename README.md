@@ -85,27 +85,51 @@ There is no default value. Check what baud rates your debugger supports.
 **cpuClockFrequency** Set this if your board has a non-standard crystal.
 
 ## SWO without debugger
-Some processors hang at power-up if you print to SWO and there is no debugger attached. As a workaround, boot with SWO disabled, and enable SWO from the debugger. To disable SWO at boot, instantiate like this:
+Some processors hang at power-up if you print to SWO and there is no debugger attached. As a workaround, boot with SWO disabled, and enable SWO from the debugger. To disable SWO at boot, instantiate with the fourth argument of SWOStream *false*, like this:
 ```
 #include <SWOStream.h>
-SWOStream s(2250000, SWO_Async, 0, false);
+SWOStream s(2250000, SWO_Async, 0, false); // swoEnable=false
+int n=0;
 void setup() {
+  pinMode(LED_BUILTIN, OUTPUT);
 }
-void loop() {
-  s.print("hello world! ");
-}
-```
-To enable SWO from gdb, type:
-```
-(gdb) set mem inaccessible-by-default off
-(gdb) set {int}0xE0000E00=-1
-```
-To disable SWO from gdb, type:
-```
-(gdb) set {int}0xE0000E00=0
-```
-There's no need to put a breakpoint and stop the processor to enable/disable SWO. Just attach.
 
+void loop() {
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(100);
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(100);
+  s.print(n++);
+  s.print(" hello, world! \n");
+  s.flush();
+}
+```
+The program will start up with SWO disabled. To enable SWO from gdb, type:
+```
+(gdb) target extended-remote /dev/ttyBmpGdb
+(gdb) monitor swd
+(gdb) attach 1
+(gdb) monitor traceswo decode
+(gdb) set mem inaccessible-by-default off
+(gdb) run
+```
+Interrupt with ctrl-C:
+```
+^C
+Program received signal SIGINT, Interrupt.
+```
+Set Trace Enable Register all ones and continue execution:
+```
+(gdb) set {int}0xE0000E00=-1
+(gdb) continue
+```
+To disable SWO from the gdb command prompt, interrupt with ctrl-C and type:
+```
+^C
+Program received signal SIGINT, Interrupt.
+(gdb) set {int}0xE0000E00=0
+(gdb) continue
+```
 # Acks
 Thanks to [orbuculum](https://github.com/orbcode/orbuculum), [Black Magic Probe book](https://github.com/compuphase/Black-Magic-Probe-Book), and Stephen P. WIlliams.
 

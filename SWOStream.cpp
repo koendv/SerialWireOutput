@@ -78,8 +78,6 @@ SWOStream::SWOStream(uint32_t swoSpeedBaud, swoProtocolType swoProtocol,
 
 SWOStream::~SWOStream() {}
 
-static uint32_t swo_bytes_written = 0;
-
 /* set current stimulus channel */
 
 void SWOStream::setChannel(uint32_t swoChannel) {
@@ -105,7 +103,6 @@ size_t SWOStream::write(uint8_t ch) {
     while (ITM->PORT[channel].u32 == 0UL)
       ;
     ITM->PORT[channel].u8 = ch;
-    swo_bytes_written++;
   }
   return 1;
 }
@@ -139,7 +136,6 @@ size_t SWOStream::write(const uint8_t *buffer, size_t size) {
       buffer++;
       --n;
     }
-    swo_bytes_written += size;
   }
   return (size);
 }
@@ -152,7 +148,7 @@ void SWOStream::flush() {
 
   uint32_t curr_channel = channel;
   channel = 31;
-  while (swo_bytes_written & 0x3f)
+  for (int i = 0; i < 64; i++)
     SWOStream::write('\0');
   channel = curr_channel;
 };
