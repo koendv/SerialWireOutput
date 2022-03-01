@@ -52,9 +52,11 @@ SWOStream::SWOStream(uint32_t swoSpeedBaud, swoProtocolType swoProtocol,
   GPIOB->PUPDR &= ~0x000000c0;        /* no pull-up or pull-down on PB3 */
   DBGMCU->CR |= DBGMCU_CR_TRACE_IOEN; /* enable IO trace pins */
 #elif defined(STM32G0xx)
+#error no SWO on Cortex-M0. SWO only on Cortex-M3, M4, M7 and M33.
 #elif defined(STM32G4xx)
 #elif defined(STM32H7xx)
 #elif defined(STM32L0xx)
+#error no SWO on Cortex-M0. SWO only on Cortex-M3, M4, M7 and M33.
 #elif defined(STM32L1xx)
 #elif defined(STM32L4xx)
 #elif defined(STM32MP1xx)
