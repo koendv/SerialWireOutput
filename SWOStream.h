@@ -8,7 +8,11 @@
  */
 
 #include <Print.h>
-#include <stm32_def.h>
+#if defined(ARDUINO_ARCH_SAM)
+# include "SWOArduinoSAM.h"
+#else
+# include <stm32_def.h>
+#endif
 
 typedef enum {
   SWO_Manchester = 0x1,
