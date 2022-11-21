@@ -61,6 +61,7 @@ SWOStream::SWOStream(uint32_t swoSpeedBaud, swoProtocolType swoProtocol,
 #elif defined(STM32L4xx)
 #elif defined(STM32MP1xx)
 #elif defined(STM32WBxx)
+#elif defined(ARDUINO_ARCH_SAM)
 #endif
 
   CoreDebug->DEMCR = CoreDebug_DEMCR_TRCENA_Msk; /* trace enable */
@@ -68,7 +69,11 @@ SWOStream::SWOStream(uint32_t swoSpeedBaud, swoProtocolType swoProtocol,
   TPI->SPPR = swoProtocol;  /* 1 = Manchester, 2 = Asynchronous */
   TPI->ACPR = swoPrescaler; /* frequency */
   TPI->FFCR = 0;            /* turn off formatter, discard ETM output */
+#if defined(ARDUINO_ARCH_SAM)
+  ITM_Ext->LAR = 0xC5ACCE55; /* unlock access to ITM registers */
+#else
   ITM->LAR = 0xC5ACCE55;    /* unlock access to ITM registers */
+#endif
   ITM->TCR =
       ITM_TCR_SWOENA_Msk | ITM_TCR_ITMENA_Msk; /* trace control register */
   ITM->TPR = 0; /* all ports accessible unprivileged */
