@@ -59,6 +59,13 @@ SWOStream::SWOStream(uint32_t swoSpeedBaud, swoProtocolType swoProtocol,
 #error no SWO on Cortex-M0. SWO only on Cortex-M3, M4, M7 and M33.
 #elif defined(STM32L1xx)
 #elif defined(STM32L4xx)
+  RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
+  GPIOB->MODER =
+      (GPIOB->MODER & ~0x000000c0) | 0x00000080; /* alternate func for PB3 */
+  GPIOB->AFR[0] &= ~0x0000f000;       /* set AF0 (==TRACESWO) on PB3 */
+  GPIOB->OSPEEDR |= 0x000000c0;       /* set max speed on PB3 */
+  GPIOB->PUPDR &= ~0x000000c0;        /* no pull-up or pull-down on PB3 */
+  DBGMCU->CR |= DBGMCU_CR_TRACE_IOEN; /* enable IO trace pins */
 #elif defined(STM32MP1xx)
 #elif defined(STM32WBxx)
 #elif defined(ARDUINO_ARCH_SAM)
