@@ -72,14 +72,14 @@ SWOStream::SWOStream(uint32_t swoSpeedBaud, swoProtocolType swoProtocol,
 #endif
 
   CoreDebug->DEMCR = CoreDebug_DEMCR_TRCENA_Msk; /* trace enable */
-  TPI->CSPSR = 1;                                /* protocol width = 1 bit */
-  TPI->SPPR = swoProtocol;  /* 1 = Manchester, 2 = Asynchronous */
-  TPI->ACPR = swoPrescaler; /* frequency */
-  TPI->FFCR = 0;            /* turn off formatter, discard ETM output */
+  TPIU->CSPSR = 1;                                /* protocol width = 1 bit */
+  TPIU->SPPR = swoProtocol;  /* 1 = Manchester, 2 = Asynchronous */
+  TPIU->ACPR = swoPrescaler; /* frequency */
+  TPIU->FFCR = 0;            /* turn off formatter, discard ETM output */
 #if defined(ARDUINO_ARCH_SAM)
   ITM_Ext->LAR = 0xC5ACCE55; /* unlock access to ITM registers */
 #else
-  ITM->LAR = 0xC5ACCE55;    /* unlock access to ITM registers */
+  ITM->LAR = 0xC5ACCE55;     /* unlock access to ITM registers */
 #endif
   ITM->TCR =
       ITM_TCR_SWOENA_Msk | ITM_TCR_ITMENA_Msk; /* trace control register */
